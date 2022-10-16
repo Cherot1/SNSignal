@@ -25,6 +25,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -41,11 +42,46 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.rssi);
         typeNetwork = findViewById(R.id.networkType);
-
         textView.setText(""+getSignalStrength(this));
+
+        MultiThreadingTest object =  new MultiThreadingTest(this);
+        object.start();
 
 
     }
+
+
+    class MultiThreadingTest extends Thread{
+
+        Context context;
+
+        MultiThreadingTest(Context context){
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while(true){
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                    Log.d("myThread", "Testing Multithreading every 3 secs");
+                    textView.setText(""+getSignalStrength(context));
+
+
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
     public String getSignalStrength(Context context) throws SecurityException {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -59,57 +95,34 @@ public class MainActivity extends AppCompatActivity {
                         CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
                         strength = String.valueOf(cellSignalStrengthWcdma.getDbm()) + " dBm";
                         typeNetwork.setText("Tipo de RED: 3G (WCDMA)");
+                        break;
 
                     } else if (cellInfos.get(i) instanceof CellInfoGsm) {
                         CellInfoGsm cellInfogsm = (CellInfoGsm) cellInfos.get(i);
                         CellSignalStrengthGsm cellSignalStrengthGsm = cellInfogsm.getCellSignalStrength();
                         strength = String.valueOf(cellSignalStrengthGsm.getDbm()) + " dBm";
                         typeNetwork.setText("Tipo de RED: 2G (GSM)");
+                        break;
 
                     } else if (cellInfos.get(i) instanceof CellInfoLte) {
                         CellInfoLte cellInfoLte = (CellInfoLte) cellInfos.get(i);
                         CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
                         strength = String.valueOf(cellSignalStrengthLte.getDbm()) + " dBm";
                         typeNetwork.setText("Tipo de RED: 4G (LTE)");
+                        break;
 
                     } else if (cellInfos.get(i) instanceof CellInfoCdma) {
                         CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfos.get(i);
                         CellSignalStrengthCdma cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
                         strength = String.valueOf(cellSignalStrengthCdma.getDbm()) + " dBm";
                         typeNetwork.setText("Tipo de RED: 3G (CDMA)");
+                        break;
 
                     }
                 }
             }
         }
         return strength;
-    }
-
-    private class getTimedSignalStrength implements Runnable{
-
-        private boolean stopRequested = false;
-
-        public synchronized boolean isStopRequested() {
-            return this.stopRequested;
-        }
-
-
-        private void sleep(long millis) {
-            try {
-                Thread.sleep(millis);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void run() {
-            Log.d("myTag","Actuaizando RSSI");
-            while (!isStopRequested()) {
-                sleep(5000);
-
-            }
-        }
     }
 
     private void requestPermission() {
