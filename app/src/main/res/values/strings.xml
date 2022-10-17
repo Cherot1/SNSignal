@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">SNSignal</string>
+    <string name="title">RF Drive Test</string>
+
+    <string name="networkInfo">RED</string>
+    <string name="operator">Operador</string>
+    <string name="networkTypeName">Tipo de RED</string>
+    <string name="rssi">RSSI</string>
+
+    <string name="locationInfo">Ubicación</string>
+    <string name="latitude">Latitud</string>
+    <string name="longitude">Longitud</string>
+
 </resources>
