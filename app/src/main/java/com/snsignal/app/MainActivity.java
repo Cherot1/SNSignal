@@ -27,6 +27,8 @@ import android.telephony.CellSignalStrengthCdma;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.CellSignalStrengthLte;
 import android.telephony.CellSignalStrengthWcdma;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.TextView;
@@ -37,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textView, typeNetwork, tvLatitude, tvLongitude;
+    private TextView textView, typeNetwork, tvLatitude, tvLongitude, tvOperator;
     private LocationManager locationManager;
 
 
@@ -46,65 +48,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermission();
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         textView = findViewById(R.id.rssi);
         typeNetwork = findViewById(R.id.networkType);
         tvLatitude = findViewById(R.id.latitude);
         tvLongitude = findViewById(R.id.longitude);
+        tvOperator = findViewById(R.id.operator);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         getSignalStrength(this);
-        GetLatLon();
-        /*MultiThreadingTest object =  new MultiThreadingTest(this);
-        object.start();*/
+        GetLatLon(this);
 
 
     }
 
 
-    /*class MultiThreadingTest extends Thread{
-
-        Context context;
-
-        MultiThreadingTest(Context context){
-            this.context = context;
-        }
-
-        @Override
-        public void run() {
-            try {
-                while(true){
-                    try {
-                        Thread.sleep(3000);
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                    Log.d("myThread", "Testing Multithreading every 3 secs");
-                    textView.setText(""+getSignalStrength(context));
-
-
-                }
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-    }*/
-
-
     public void getSignalStrength(Context context) throws SecurityException {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        //String strength = null;
         List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
+
+        TelephonyManager tManager = (TelephonyManager) getBaseContext()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        //String sim1 = tManager.getNetworkOperatorName();
+        tvOperator.setText(""+tManager.getNetworkOperatorName());
+
+
         if(cellInfos != null) {
             for (int i = 0 ; i < cellInfos.size() ; i++) {
                 if (cellInfos.get(i).isRegistered()) {
                     if (cellInfos.get(i) instanceof CellInfoWcdma) {
                         CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfos.get(i);
                         CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
-                        //strength = String.valueOf(cellSignalStrengthWcdma.getDbm()) + " dBm";
                         textView.setText(cellSignalStrengthWcdma.getDbm() + " dBm");
                         typeNetwork.setText("3G (WCDMA)");
                         break;
@@ -112,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                     } else if (cellInfos.get(i) instanceof CellInfoGsm) {
                         CellInfoGsm cellInfogsm = (CellInfoGsm) cellInfos.get(i);
                         CellSignalStrengthGsm cellSignalStrengthGsm = cellInfogsm.getCellSignalStrength();
-                        //strength = String.valueOf(cellSignalStrengthGsm.getDbm()) + " dBm";
                         textView.setText(cellSignalStrengthGsm.getDbm() + " dBm");
                         typeNetwork.setText("2G (GSM)");
                         break;
@@ -120,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
                     } else if (cellInfos.get(i) instanceof CellInfoLte) {
                         CellInfoLte cellInfoLte = (CellInfoLte) cellInfos.get(i);
                         CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
-                        //strength = String.valueOf(cellSignalStrengthLte.getDbm()) + " dBm";
                         textView.setText(cellSignalStrengthLte.getDbm() + " dBm");
                         typeNetwork.setText("4G (LTE)");
                         break;
@@ -128,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                     } else if (cellInfos.get(i) instanceof CellInfoCdma) {
                         CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfos.get(i);
                         CellSignalStrengthCdma cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
-                        //strength = String.valueOf(cellSignalStrengthCdma.getDbm()) + " dBm";
                         textView.setText(cellSignalStrengthCdma.getDbm() + " dBm");
                         typeNetwork.setText("3G (CDMA)");
                         break;
@@ -139,12 +112,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void GetLatLon() {
+    public void GetLatLon(Context context) {
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
 
                 tvLatitude.setText("" + location.getLatitude());
                 tvLongitude.setText("" + location.getLongitude());
+                getSignalStrength(context);
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
