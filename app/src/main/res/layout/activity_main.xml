@@ -129,6 +129,7 @@
     </TableLayout>
 
     <TableLayout
+        android:id="@+id/tableLayout2"
         android:layout_width="406dp"
         android:layout_height="133dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -161,9 +162,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:paddingLeft="15dp"
                 android:layout_marginStart="40dp"
                 android:fontFamily="sans-serif-black"
+                android:paddingLeft="15dp"
                 android:text="@string/latitude"
                 android:textSize="20sp" />
 
@@ -187,9 +188,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:paddingLeft="15dp"
                 android:layout_marginStart="40dp"
                 android:fontFamily="sans-serif-black"
+                android:paddingLeft="15dp"
                 android:text="@string/longitude"
                 android:textSize="20sp" />
 
@@ -205,5 +206,17 @@
         </TableRow>
 
     </TableLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/button"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

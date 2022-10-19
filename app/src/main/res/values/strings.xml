@@ -11,4 +11,6 @@
     <string name="latitude">Latitud</string>
     <string name="longitude">Longitud</string>
 
+    <string name="button">Guardar Datos</string>
+
 </resources>
