@@ -1,2 +1,3 @@
-# SNSignal
-Mobile Network Signal Strength Logger Android App.  
+#Mobile Network Signal Strength Logger App
+
+For Android devices and save data in a .csv file 
